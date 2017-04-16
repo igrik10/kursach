@@ -1,55 +1,48 @@
-console.log('database');
-var pg = require("pg");
-var conString = "pg://postgres:er@dmin_2k17@ecoresource.ddns.net:5051/geo";
-var client = new pg.Client(conString);
+const CONNECTION_STRING = "pg://postgres:er@dmin_2k17@ecoresource.ddns.net:5051/geo";
 
+var pg = require("pg");
+var client = new pg.Client(CONNECTION_STRING);
+var query = client.query("SELECT ST_AsGeoJSON(geom) FROM pointrivermodel limit 10");
+var count = 0, val = [];
+
+function insertIntoDB(){
+    for ( var i=0; i < 20;  i++)
+    {
+        val.push(Math.random());
+        /*    client.query(
+         'INSERT INTO test_water (water_polution, cleaned_water) VALUES($1, $2)', [Math.random(), 0],
+         function(err, result) {
+         if (err) {
+         console.log(err);
+         } else {
+         console.log('row inserted with id: ' + result.rows[0].id);
+         }
+
+         count++;
+         console.log('count = ' + count);
+         if (count == 20) {
+         console.log('Client will end now!!!');
+         client.end();
+         }
+         });*/
+    }
+}
+
+function selectFromDB(){
+    return "SELECT ST_AsGeoJSON(geom) FROM pointrivermodel limit 10";
+}
 
 client.connect();
-
-var query = client.query("SELECT * FROM test_water");
-//client.query("CREATE TABLE test_water ( water_polution float, cleaned_water float)");
-var count = 0, val = [];
-for ( var i=0; i < 20;  i++)
-{
-    val.push(Math.random());
-/*    client.query(
-        'INSERT INTO test_water (water_polution, cleaned_water) VALUES($1, $2)', [Math.random(), 0],
-        function(err, result) {
-            if (err) {
-                console.log(err);
-            } else {
-                console.log('row inserted with id: ' + result.rows[0].id);
-            }
-
-            count++;
-            console.log('count = ' + count);
-            if (count == 20) {
-                console.log('Client will end now!!!');
-                client.end();
-            }
-        });*/
-}
-/*
-var async = require("async");
-
-var storeTeamData = function (val) {
-    var query = "INSERT INTO test_water (water_polution, cleaned_water) VALUES($1, $2)";
-
-    client.connect(function(err, client, done){
-        if(err) return console.log(err);
-
-        async.map(val, function(team){
-            client.query(query, [team, 0]);
-        }, function(error, results){
-            console.log("Finished inserts!", error, results);
-            client.end();
-        });
-    });
-};
-
-storeTeamData(val);
-*/
 query.on("end", (data) => {
-    console.log(data);
+    let x = new Array();
+    let y = new Array();
+
+    data.rows.forEach(row => {
+        x.push(JSON.parse(row.st_asgeojson).coordinates[0]);
+        y.push(JSON.parse(row.st_asgeojson).coordinates[1]);
+    });
+
+    console.log(x);
+    console.log(y);
     client.end();
 });
