@@ -13,6 +13,15 @@ function insertIntoDB() {
         idArray.push(row.gid);
     });
 
+    function Inserts(template, data) {
+        if (!(this instanceof Inserts)) {
+            return new Inserts(template, data);
+        }
+        this._rawDBType = true;
+        this.formatDBType = function () {
+            return data.map(d=>'(' + pgp.as.format(template, d) + ')').join(',');
+        };
+    }
 
     for (var i = 0, arrayLength = Math.ceil(data.rowCount / 500); i < arrayLength; i++) {
         var dataArray = [];
