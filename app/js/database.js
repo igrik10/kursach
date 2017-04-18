@@ -1,8 +1,10 @@
 const CONNECTION_STRING = "pg://postgres:er@dmin_2k17@ecoresource.ddns.net:5051/geo";
 
 var pg = require("pg");
+var sleep = require('thread-sleep');
 var client = new pg.Client(CONNECTION_STRING);
-var query = client.query("SELECT ST_AsGeoJSON(geom) FROM pointrivermodel");
+var query = client.query("SELECT gid FROM pointrivermodel");
+// var query = client.query("SELECT ST_AsGeoJSON(geom) FROM pointrivermodel");
 var count = 0, val = [];
 
 function Inserts(template, data) {
@@ -15,34 +17,50 @@ function Inserts(template, data) {
     };
 }
 
-function insertIntoDB() {
-    var query = client.query("SELECT gid FROM pointrivermodel");
+
+function insertIntoDB(data) {
+    // var query = client.query("SELECT gid FROM pointrivermodel");
     var idArray = [];
+    // var index = 0;
+    var updateEl = 0;
     data.rows.forEach(row => {
         idArray.push(row.gid);
     });
 
+ // console.log([[1,2],[3,4]].map(d => '(' + d + ')').join(',')); return;
     for (let i = 0, arrayLength = Math.ceil(data.rowCount / 500); i < arrayLength; i++) {
         let dataArray = [];
-        for (let j = 0; j < 500 * (i + 1); j++) {
-            let index = (i == 0) ? j : j + (i * 500);
-            dataArray.push([idArray[index], (0.5 + Math.random() * 101)]);
-        }
+            // insert = Inserts('$1, $2', dataArray);
+        /* for (let j = 0; j < 500; j++) {
+             index = (i == 0) ? j : j + (i * 500);
+             dataArray.push([idArray[index], (0.5 + Math.random() * 101)]);
+         }*/
+//[dataArray.map(d => '(' + d + ')').join(',')]
+        // console.log(Inserts('$1, $2', dataArray)); return;
+// console.log([dataArray.map(d => '(' + d + ')').join(',')]); return;
         client.query(
-            'INSERT INTO  pointrivermodel (gid, pollution_in_point) VALUES $1', Inserts('$1, $2', dataArray),
+            'UPDATE  pointrivermodel SET pollution_in_point = $1 WHERE gid = $2', [(0.5 + Math.random() * 101), idArray[i]],
             function (err, result) {
                 if (err) {
                     console.log(err);
                 } else {
-                    console.log('row inserted with id: ' + result.rows[0]);
+                    console.log('row update with id: ' +  idArray[i]);
                 }
 
-                count++;
                 console.log('count = ' + count);
-                if (count == arrayLength) {
+                count++;
+                if (count == data.rowCount) {
                     console.log('Client will end now!!!');
                     client.end();
                 }
+
+                if (updateEl == 500)
+                {
+                    sleep(10000);
+                    updateEl = 0;
+                }
+
+                updateEl++;
             });
     }
 }
@@ -59,8 +77,8 @@ function pushCoordinatesInArray(data) {
         x.push(JSON.parse(row.st_asgeojson).coordinates[0]);
         y.push(JSON.parse(row.st_asgeojson).coordinates[1]);
     });
-    console.log(x);
-    console.log(y);
+    // console.log(x);
+    // console.log(y);
 } //done
 
 function pushIdInArray(data) {
@@ -68,11 +86,12 @@ function pushIdInArray(data) {
     data.rows.forEach(row => {
         idArray.push(row.gid);
     });
-    console.log(idArray);
+    // console.log(idArray);
 }
 
 client.connect();
 query.on("end", (data) => {
-    pushIdInArray(data);
-    client.end();
+    // pushCoordinatesInArray(data);
+    insertIntoDB(data);
+    // client.end();
 });
