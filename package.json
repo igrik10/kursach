@@ -12,5 +12,8 @@
   "dependencies": {
     "module": "^1.2.5",
     "pg": "^6.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.11.0"
   }
 }

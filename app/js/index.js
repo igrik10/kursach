@@ -6,7 +6,8 @@ const server = http.createServer(function(req, res) {
     res.statusCode = 200;
     res.setHeader('Content-Type', 'text/plain');
     res.end(function() {
-        require('database');
+        // require('database');
+        require('mathForClearing');
     });
 });
 

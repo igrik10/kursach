@@ -4,35 +4,40 @@
 <head>
     <meta charset="utf-8"/>
     <title>The Page Returned by Making Http Call to Node.js</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css"
+          integrity="sha512-07I2e+7D8p6he1SIM+1twR5TIrhUQn9+I6yjqD53JQjFiMf8EtC93ty0/5vJTZGF8aAocvHYNEDJajGdNx1IsQ=="
+          crossorigin=""/>
+
     <style type="text/css">
-        table, td {
-            border: double;
-        }
+        #mapid { height: 180px; }
     </style>
+    <link href="css/style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
 </head>
 <body>
-<h1>Product Information Page</h1>
-<table>
-    <tr>
-        <td>Product Id:</td>
-        <td>
-            <input type="text"/>
-        </td>
-    </tr>
-    <tr>
-        <td>Product Name:</td>
-        <td>
-            <input type="text"/>
-        </td>
-    </tr>
-    <tr>
-        <td></td>
-        <td>
-            <input type="button" value="Save"/>
-        </td>
-    </tr>
-</table>
 
+<form class="col-sm-4">
+    <div class="form-group">
+        <label for="time">Time</label>
+        <input type="number" class="form-control" id="time" min="0" aria-describedby="time" placeholder="Enter time in seconds">
+    </div>
+    <div class="form-group">
+        <label for="radius">Password</label>
+        <input type="number" class="form-control" id="radius" min="0" placeholder="Enter Radius in meters">
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+   <!-- <div id="mapid"></div> -->
 
+    <script
+            src="https://code.jquery.com/jquery-3.2.1.js"
+            integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
+            crossorigin="anonymous"></script>
+<script src="js/mathForClearing.js"></script>
+    <!-- <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"
+            integrity="sha512-A7vV8IFfih/D732iSSKi20u/ooOfj/AGehOKq0f4vLT1Zr2Y+RX7C+w8A1gaSasGtRUZpF/NZgzSAu4/Gc41Lg=="
+            crossorigin=""></script>
+    <script type="text/javascript" src="./js/leafletLogic.js"></script>-->
 </body>
 </html>
