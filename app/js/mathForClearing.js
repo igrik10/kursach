@@ -21,7 +21,7 @@ function Clearing() {
     };
 
     this.getDeltaH = function () {
-        return this.getTime() / this.getSegmentsNumber();
+        return Number(this.getTime() / this.getSegmentsNumber());
     };
 
     this.setTime = function (t) {
@@ -39,11 +39,12 @@ function Clearing() {
     this.getWaterPolution = function () {
         return this.waterPolution;
     };
+
     /**
      * @return {number}
      */
     this.VStar = function () {
-        let V = 1 - 110 / 70,
+        let V = 1 - 110 / 50,
             D = 0.62;
 
         return V / D;
@@ -90,7 +91,7 @@ function Clearing() {
         return Number((2 * this.h(n - 1) + this.h(n - 1) * (this.h(n - 1) * this.h(n)) * this.VStar() + 2 * this.h(n)) / this.Kvgl());
     };
 
-    this.clear = function () {
+    this.prepareData = function () {
         let x = [];
 
         x[0] = Number(0 - this.h(1) * this.getWaterPolution());
@@ -98,7 +99,6 @@ function Clearing() {
 
         for (let n = 2; n < this.getSegmentsNumber(); n++) {
             this.setN(n);
-
             // console.log('K1l=',K1l(n));
             // console.log('K2l=',K2l(n));
             // console.log('n-1=',Number(n-1));
@@ -110,27 +110,61 @@ function Clearing() {
         }
 
         return x[this.getSegmentsNumber() - 1];
+    };
+
+    this.clear = function () {
+        let first, second;
+
+        do {
+            first = this.prepareData();
+            this.setSegmentsNumber(this.getSegmentsNumber() * 2);
+            second = this.prepareData();
+
+            // console.log(parseFloat(Math.abs(first - second)));
+
+        } while ( parseFloat(Math.abs(first - second)) > parseFloat(0.01) );
+
+        return second;
     }
 }
 
-let clearing = new Clearing();
+module.exports = new Clearing();
 
+/*function Query() {
 
-$('button').click(
-    function () {
-        let time = $('#time').val(),
-            radius = $('#radius').val(),
-            segment = $('#segment').val();
+ this.client = require("database.js")();
 
-        if (time.trim() !== '' && radius.trim() !== '' && segment.trim() !== '') {
-            clearing.setSegmentsNumber(segment);
-            clearing.setTime(time);
-            clearing.setWaterPolution(73);
-            console.log(clearing.clear());
-        }
-        else
-        {
-            alert('Enter all data');
-        }
-    }
-);
+ this.getPoint = function () {
+ let query = this.client.query("SELECT ST_AsGeoJSON(geom) FROM river_pollution");
+
+ this.client.connect();
+ query.on("end", (data) => {
+ console.log(data);
+ this.client.end();
+ });
+ }
+ }*/
+
+// let clearing = new Clearing();
+
+/*
+ $('button').click(
+ function () {
+
+ console.log(query.getPoint()); return;
+
+ let time = $('#time').val(),
+ radius = $('#radius').val(),
+ segment = $('#segment').val();
+
+ if (time.trim() !== '' && radius.trim() !== '' && segment.trim() !== '') {
+ clearing.setSegmentsNumber(segment);
+ clearing.setTime(time);
+ clearing.setWaterPolution(73);
+ console.log(clearing.clear());
+ }
+ else {
+ alert('Enter all data');
+ }
+ }
+ );*/

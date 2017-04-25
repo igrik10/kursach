@@ -17,20 +17,20 @@
 </head>
 <body>
 
-<form class="col-sm-4">
+<form class="col-sm-4" action="http://127.0.0.1:3000/myaction" method="post">
     <div class="form-group">
         <label for="time">Time</label>
-        <input type="number" class="form-control" id="time" min="0" aria-describedby="time" placeholder="Enter time in seconds">
+        <input type="number" class="form-control" id="time" name="time" min="0" aria-describedby="time" placeholder="Enter time in seconds">
     </div>
     <div class="form-group">
         <label for="time">Segments count</label>
-        <input type="number" class="form-control" id="segment" min="0" aria-describedby="time" placeholder="Enter first segments count">
+        <input type="number" class="form-control" id="segment" name="segment" min="0" aria-describedby="time" placeholder="Enter first segments count">
     </div>
     <div class="form-group">
         <label for="radius">Radius</label>
-        <input type="number" class="form-control" id="radius" min="0" placeholder="Enter radius in meters">
+        <input type="number" class="form-control" id="radius" name="radius" min="0" placeholder="Enter radius in meters">
     </div>
-    <button type="button" class="btn btn-primary">Submit</button>
+    <button type="submit" class="btn btn-primary">Submit</button>
 </form>
    <!-- <div id="mapid"></div> -->
 
@@ -38,7 +38,7 @@
             src="https://code.jquery.com/jquery-3.2.1.js"
             integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
             crossorigin="anonymous"></script>
-<script src="js/mathForClearing.js"></script>
+<!--<script src="js/mathForClearing.js"></script>-->
     <!-- <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"
             integrity="sha512-A7vV8IFfih/D732iSSKi20u/ooOfj/AGehOKq0f4vLT1Zr2Y+RX7C+w8A1gaSasGtRUZpF/NZgzSAu4/Gc41Lg=="
             crossorigin=""></script>
