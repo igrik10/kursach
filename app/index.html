@@ -18,17 +18,27 @@
 <body>
 
 <form class="col-sm-4" action="http://127.0.0.1:3000/myaction" method="post">
+   <div class="k-column-wrapper">
+       <div class="form-group">
+           <label for="k1">k1</label>
+           <input type="number" class="form-control" id="k1" name="k1" min="0" placeholder="Введіть k1">
+       </div>
+       <div class="form-group">
+           <label for="k2">k2</label>
+           <input type="number" class="form-control" id="k2" name="k2" min="0" placeholder="Введіть k2">
+       </div>
+       <div class="form-group">
+           <label for="k3">k3</label>
+           <input type="number" class="form-control" id="k3" name="k3" min="0" placeholder="Введіть k3">
+       </div>
+   </div>
     <div class="form-group">
-        <label for="time">Time</label>
-        <input type="number" class="form-control" id="time" name="time" min="0" aria-describedby="time" placeholder="Enter time in seconds">
+        <label for="time">Час</label>
+        <input type="number" class="form-control" id="time" name="time" min="0" aria-describedby="time" placeholder="Введіть час в секундах">
     </div>
     <div class="form-group">
-        <label for="time">Segments count</label>
-        <input type="number" class="form-control" id="segment" name="segment" min="0" aria-describedby="time" placeholder="Enter first segments count">
-    </div>
-    <div class="form-group">
-        <label for="radius">Radius</label>
-        <input type="number" class="form-control" id="radius" name="radius" min="0" placeholder="Enter radius in meters">
+        <label for="radius">Радіус</label>
+        <input type="number" class="form-control" id="radius" name="radius" min="0" placeholder="Введіть радіус в метрах">
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
@@ -38,10 +48,5 @@
             src="https://code.jquery.com/jquery-3.2.1.js"
             integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
             crossorigin="anonymous"></script>
-<!--<script src="js/mathForClearing.js"></script>-->
-    <!-- <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"
-            integrity="sha512-A7vV8IFfih/D732iSSKi20u/ooOfj/AGehOKq0f4vLT1Zr2Y+RX7C+w8A1gaSasGtRUZpF/NZgzSAu4/Gc41Lg=="
-            crossorigin=""></script>
-    <script type="text/javascript" src="./js/leafletLogic.js"></script>-->
 </body>
 </html>

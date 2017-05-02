@@ -1,8 +1,12 @@
 function Clearing() {
+
+    this.k1 = 1;
+    this.k2 = 1;
+    this.k3 = 1;
     this.n = 0;
-    this.deltaH = 0;
     this.time = 0;
     this.waterPolution = 0;
+    this.segmentsNumber = 10;
 
     this.setN = function (n) {
         this.n = n;
@@ -18,6 +22,30 @@ function Clearing() {
 
     this.getSegmentsNumber = function () {
         return this.segmentsNumber;
+    };
+
+    this.getK1 = function () {
+        return this.k1;
+    };
+
+    this.getK2 = function () {
+        return this.k2;
+    };
+
+    this.getK3 = function () {
+        return this.k3;
+    };
+
+    this.setK1 = function (k1) {
+        this.k1 = k1;
+    };
+
+    this.setK2 = function (k2) {
+        this.k2 = k2;
+    };
+
+    this.setK3 = function (k3) {
+        this.k3 = k3;
     };
 
     this.getDeltaH = function () {
@@ -54,7 +82,7 @@ function Clearing() {
      * @return {number}
      */
     this.Gl = function () {
-        return 0.25 * (1 - Math.exp(-0.25 * this.getTime()));
+        return - this.getK3() * ( 1 - Math.exp( - this.getK2() * ( 1 - Math.exp(-this.getK1() * this.getTime())) * this.getTime()));
     };
 
     /**
@@ -70,7 +98,8 @@ function Clearing() {
     this.Kvgl = function () {
         let n = this.getN();
 
-        return Number(2 * this.h(n - 1) + this.h(n - 1) * (this.h(n - 1) + this.h(n)) * this.VStar() - this.h(n - 1) * this.h(n) * (this.h(n - 1) + this.h(n)) * this.Gl());
+        return Number(2 * this.h(n - 1) + this.h(n - 1) * (this.h(n - 1) + this.h(n)) * this.VStar()
+            - this.h(n - 1) * this.h(n) * (this.h(n - 1) + this.h(n)) * this.Gl());
     };
 
     /**
@@ -88,7 +117,8 @@ function Clearing() {
     this.K1l = function () {
         let n = this.getN();
 
-        return Number((2 * this.h(n - 1) + this.h(n - 1) * (this.h(n - 1) * this.h(n)) * this.VStar() + 2 * this.h(n)) / this.Kvgl());
+        return Number((2 * this.h(n - 1) + this.h(n - 1) * (this.h(n - 1) * this.h(n)) *
+            this.VStar() + 2 * this.h(n)) / this.Kvgl());
     };
 
     this.prepareData = function () {
@@ -99,13 +129,6 @@ function Clearing() {
 
         for (let n = 2; n < this.getSegmentsNumber(); n++) {
             this.setN(n);
-            // console.log('K1l=',K1l(n));
-            // console.log('K2l=',K2l(n));
-            // console.log('n-1=',Number(n-1));
-            // console.log('x=', Number(x[n-1]));
-            // console.log('n-2',Number(n-2));
-            // console.log('xn=',Number(x[n-2]));
-            // console.log( K1l(n) * x[n-1] - K2l(n) * x[n-2]);
             x[n] = this.K1l() * x[n - 1] - this.K2l() * x[n - 2];
         }
 
@@ -120,51 +143,10 @@ function Clearing() {
             this.setSegmentsNumber(this.getSegmentsNumber() * 2);
             second = this.prepareData();
 
-            // console.log(parseFloat(Math.abs(first - second)));
-
-        } while ( parseFloat(Math.abs(first - second)) > parseFloat(0.01) );
+        } while ( parseFloat(Math.abs(first - second)) > parseFloat(0.0001) );
 
         return second;
     }
 }
 
 module.exports = new Clearing();
-
-/*function Query() {
-
- this.client = require("database.js")();
-
- this.getPoint = function () {
- let query = this.client.query("SELECT ST_AsGeoJSON(geom) FROM river_pollution");
-
- this.client.connect();
- query.on("end", (data) => {
- console.log(data);
- this.client.end();
- });
- }
- }*/
-
-// let clearing = new Clearing();
-
-/*
- $('button').click(
- function () {
-
- console.log(query.getPoint()); return;
-
- let time = $('#time').val(),
- radius = $('#radius').val(),
- segment = $('#segment').val();
-
- if (time.trim() !== '' && radius.trim() !== '' && segment.trim() !== '') {
- clearing.setSegmentsNumber(segment);
- clearing.setTime(time);
- clearing.setWaterPolution(73);
- console.log(clearing.clear());
- }
- else {
- alert('Enter all data');
- }
- }
- );*/

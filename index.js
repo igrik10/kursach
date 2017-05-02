@@ -1,10 +1,3 @@
-/*const http = require('http');
- const hostname = '127.0.0.1';
- const port = 3000;
-
- const nodeStatic = require('node-static');
- const file = new nodeStatic.Server('.');*/
-
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
@@ -15,30 +8,20 @@ app.use(express.static('app'));
 app.use(bodyParser.urlencoded({extended: true}));
 
 app.post('/myaction', function (req, res) {
-    // let clearing = new Clearing();
     clearing.setTime(req.body.time);
-    clearing.setSegmentsNumber(req.body.segment);
-    clearing.setWaterPolution(73);
-    db.getPoint();
-    console.log('geo', db.getGeo());
+    clearing.setK1(req.body.k1);
+    clearing.setK2(req.body.k2);
+    clearing.setK3(req.body.k3);
+    clearing.setSegmentsNumber(10);
+    db.getPoint((response)=>{
+        clearing.setWaterPolution(response['water_pollution']);
+        let cleared = clearing.clear().toString();
 
-    res.send('Result "' + clearing.clear() + '".');
+        //db.updatePoint( response['id'], cleared );
+        res.send('Result "' + cleared + '".');
+    });
 });
 
 app.listen(3000, function () {
     console.log('Server running at http://127.0.0.1:3000/');
 });
-
-/*
- const server = http.createServer((req, res) => {
- // res.statusCode = 200;
- // res.setHeader('Content-Type', 'text/plain');
- // res.end(() => { require('./app/js/mathForClearing')});
- // res.end(() => { require('./app/js/database')});
- file.serve(req, res);
- });
-
- server.listen(port, hostname, () => {
- console.log('Server running at http://' + hostname + ':' + port +'/');
- });
- */

@@ -1,23 +1,12 @@
 const CONNECTION_STRING = "pg://postgres:er@dmin_2k17@ecoresource.ddns.net:5051/geo";
-
 function Db() {
     this.pg = require("pg");
-    this.sleep = require('thread-sleep');
     this.client = new this.pg.Client(CONNECTION_STRING);
-    this.geo = [];
-
-    this.setGeo = function (val) {
-        this.geo = val;
-    };
-
-    this.getGeo = function () {
-        return this.geo;
-    };
-
-    this.getPoint = function () {
-        client.connect();
-
-        let  $this = this,point = [], query = client.query("SELECT gid, ST_AsGeoJSON(geom) as geom FROM river_pollution LIMIT 1",[],
+    this.getPoint = function (callback) {
+        let $this = this, point = [];
+        $this.client.connect();
+        $this.client.query("SELECT gid, ST_AsGeoJSON(geom) as geom, water_pollution FROM river_pollution " +
+            "WHERE water_pollution <> '' AND water_pollution IS NOT NULL LIMIT 1", [],
             function (err, res) {
                 if (err) {
                     console.log(err);
@@ -26,37 +15,25 @@ function Db() {
                 res.rows.forEach(row => {
                     point['id'] = row.gid;
                     point['geom'] = JSON.parse(row.geom).coordinates;
-                    $this.setGeo(point);
-                    $this.getGeo(point);
+                    point['water_pollution'] = parseFloat(row.water_pollution);
+                    callback(point);
                 });
-                client.end();
+                $this.client.end();
             });
-
-
-       /* query.on("end", (data) => {
-            return data;
-           /!* data.rows.forEach(row => {
-                point['id'] = row.gid;
-                point['geom'] = JSON.parse(row.geom).coordinates;
-                console.log('1', point);
-            });*!/
-            client.end();
-        });*/
-
     };
-
     this.updatePoint = function (id, value) {
-        let query = client.query("UPDATE river_pollution SET pollution_in_point_after_clearing = $1 WHERE $2", [value, id],
+        let $this = this;
+        $this.client.connect();
+        $this.client.query("UPDATE river_pollution " +
+            "SET pollution_in_point_after_clearing = $2 WHERE gid = $1", [id, value],
             function (err) {
                 if (err) {
                     console.log(err);
                 } else {
                     console.log('row update with id: ' + id);
                 }
-
                 console.log('Client will end now!!!');
-                client.end();
-
+                $this.client.end();
             }
         );
     };
@@ -64,6 +41,7 @@ function Db() {
 
 module.exports = new Db();
 
+/*
 var pg = require("pg");
 var sleep = require('thread-sleep');
 var client = new pg.Client(CONNECTION_STRING);
@@ -143,6 +121,7 @@ function pushIdInArray(data) {
         idArray.push(row.gid);
     });
 }
+*/
 
 /*client.connect();
  query.on("end", (data) => {
